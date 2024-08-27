@@ -1,0 +1,68 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  color: #FFFFFF;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select {
+  font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+}
+
+#root, #__next {
+  isolation: isolate;
+}
+
+h2, h3, h4, h5, h6 {
+  margin-top: 25px;
+}
+
+ul {
+    margin-bottom: 10px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+.note {
+    border-left: 4px solid #ffeb3b;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.github-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #FFFFFF;
+    background: linear-gradient(45deg, #426FA3, #5FB0B7);
+    border-radius: 16px;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.github-link:hover {
+    opacity: 0.8;
+}

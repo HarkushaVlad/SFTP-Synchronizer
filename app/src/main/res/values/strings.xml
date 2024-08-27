@@ -1,0 +1,149 @@
+<resources>
+    <string name="app_name">SFTP Synchronizer</string>
+
+    <!-- MainActivity.java -->
+    <string name="no_phone_path">No phone path</string>
+    <string name="no_sftp_path">No SFTP path</string>
+    <string name="cannot_open_log_file">Cannot open the log file</string>
+    <string name="open_log_file_with">Open log file with</string>
+    <string name="log_file_not_exist">Log file does not exist</string>
+    <string name="paths_cant_be_empty">Paths cannot be empty</string>
+    <string name="paths_must_have_same_target">All paths must have the same target dir/file</string>
+    <string name="sync_in_progress_title">Synchronization in progress\nPlease do not interrupt</string>
+    <string name="merge_path_message">Merge path: %1$s</string>
+    <string name="connecting_to_sftp">\n\n@ Connecting to SFTP..</string>
+    <string name="success_connecting_to_sftp">\n\n    Successfully connected to SFTP</string>
+    <string name="reading_logs">\n\n@ Reading logs..</string>
+    <string name="success_logs_read">\n\n    Logs have been read</string>
+    <string name="two_files_mod">\n\n@ Two files mod</string>
+    <string name="file_up_to_date">\n\n    Files are up to date</string>
+    <string name="different_directories">Different directories names</string>
+    <string name="getting_current_storage_structures">\n\n@ Getting current storage structures..</string>
+    <string name="checking_for_new_files">\n\n@ Checking for new files..</string>
+    <string name="no_new_files">\n\n    No new files</string>
+    <string name="checking_for_deleted_files">\n\n@ Checking for deleted files..</string>
+    <string name="skipped_deleting_disabled">\n\n    Skipped: Deletion has been disabled</string>
+    <string name="skipped_unable_to_identify_deleted_files">\n\n    Skipped: Unable to identify deleted files</string>
+    <string name="no_deleted_files">\n\n    No deleted files</string>
+    <string name="comparing_files">\n\n@ Comparing files..</string>
+    <string name="all_files_up_to_date">\n\n    All files are up to date</string>
+    <string name="writing_logs">\n\n@ Writing logs..</string>
+    <string name="synchronization_successful">Synchronization was successful\nNow you can safely close the window</string>
+    <string name="success">Success</string>
+    <string name="synchronization_failed">Synchronization failed\nAn error occurred</string>
+    <string name="synchronization_canceled">Synchronization was canceled</string>
+    <string name="cant_save_operations_log">Cannot save operations log</string>
+    <string name="operations_log_merge_path">Merge path: %1$s\n\n../SFTP_synchronizer/operations_log.txt :</string>
+    <string name="failed_load_guide">"Failed to load the guide"</string>
+    <string name="sftp_credentials_should_filled">SFTP credentials should be filled</string>
+    <string name="set_base_sftp_directory">Set the base SFTP directory in the settings</string>
+    <string name="phone_path_empty">Phone path is empty</string>
+    <string name="permission_for_storage_should_granted">Permission for storage should be granted</string>
+
+    <!-- Exceptions.java -->
+    <string name="both_paths_not_exist_exception">At least one path should exist</string>
+    <string name="different_directories_names_exception">For the safety of your files, target directories on both platforms should have the same names</string>
+    <string name="incompatible_path_exception">Incompatible paths provided: Expected both to be files or directories, but one is a file and the other is a directory</string>
+    <string name="invalid_sftp_credentials_exception">Invalid SFTP credentials or the server is unreachable</string>
+    <string name="invalid_target_file_path_exception">Path is invalid: %1$s</string>
+    <string name="log_file_creation_exception">An error occurred while creating %1$s.txt</string>
+    <string name="logs_reading_exception">An error occurred while reading log file</string>
+    <string name="paths_logging_exception">An error occurred while logging paths</string>
+
+    <!-- PhoneStorage.java -->
+    <string name="reading_phone_storage">\n\n- Reading phone storage:</string>
+    <string name="read_operation">read></string>
+    <string name="copying_files_dirs_from_sftp_to_phone">\n\n- Copying files/dirs from SFTP to phone:</string>
+    <string name="download_operation">download></string>
+    <string name="insert_operation">insert></string>
+    <string name="deleting_files_dirs_on_phone">\n\n- Deleting files/dirs on phone:</string>
+    <string name="del_operation">del></string>
+
+    <!-- SftpStorage.java -->
+    <string name="reading_sftp_storage">\n\n- Reading SFTP storage:</string>
+    <string name="copying_files_dirs_from_phone_to_sftp">\n\n- Copying files/dirs from phone to SFTP:</string>
+    <string name="deleting_files_dirs_on_sftp">\n\n- Deleting files/dirs on SFTP:</string>
+    <string name="copy_operation">copy></string>
+    <string name="del_dir_operation">del dir></string>
+    <string name="del_file_operation">del file></string>
+    <string name="upload_operation">upload></string>
+    <string name="create_dir_operation">create dir></string>
+    <string name="sftp_connection_close">\n\n@ SFTP connections was closed</string>
+
+    <!-- Storage.java -->
+    <string name="writing_log">\n\n- Writing log:</string>
+    <string name="write_operation">write></string>
+
+    <!-- StorageUtils.java -->
+    <string name="log">log</string>
+    <string name="operations_log">operations log</string>
+    <string name="replace_title">The following file will be &lt;font color=&quot;#ffa500&quot;&gt;replaced&lt;/font&gt;.&lt;br&gt;Confirm operation:</string>
+    <string name="delete_title">The following files will be &lt;font color=&quot;red&quot;&gt;deleted&lt;/font&gt;.&lt;br&gt;Confirm operations:</string>
+    <string name="update_title">The following files will be &lt;font color=&quot;#ffa500&quot;&gt;replaced&lt;/font&gt;.&lt;br&gt;Confirm operations:</string>
+    <string name="phone">phone</string>
+    <string name="sftp">SFTP</string>
+    <string name="files_to_be_deleted">Files to be &lt;font color=&quot;red&quot;&gt;deleted&lt;/font&gt; on the &lt;b&gt;%1$s&lt;/b&gt;:&lt;br&gt;&lt;br&gt;</string>
+    <string name="files_replaced_by">Files on the &lt;b&gt;%1$s&lt;/b&gt; that will be &lt;font color=&quot;#ffa500&quot;&gt;replaced&lt;/font&gt; by files from &lt;b&gt;%2$s&lt;/b&gt;:&lt;br&gt;&lt;br&gt;</string>
+    <string name="file_replace_format">&lt;b&gt;%1$s file&lt;/b&gt;:&lt;br&gt;%2$s&lt;br&gt;⬇️&lt;br&gt;&lt;b&gt;%3$s file&lt;/b&gt;:&lt;br&gt;%4$s&lt;br&gt;&lt;br&gt;</string>
+
+    <!-- SftpSettingsDialogFragment.java -->
+    <string name="saved">Saved</string>
+    <string name="sftp_address_cannot_empty">SFTP address cannot be empty</string>
+    <string name="username_cannot_empty">Username cannot be empty</string>
+    <string name="password_cannot_empty">Password cannot be empty</string>
+
+    <!-- AutoConfirmationDialogFragment.java -->
+    <string name="auto_confirmation_enabled">Auto-confirmation is enabled</string>
+
+    <!-- activity_main.xml -->
+    <string name="current_phone_path">Current phone path:</string>
+    <string name="current_sftp_path">Current SFTP path:</string>
+    <string name="phone_path_input_hint">/storage/emulated/0/directory…</string>
+    <string name="sftp_path_input_hint">/D:/directory…</string>
+    <string name="file">File</string>
+    <string name="choose">Choose</string>
+    <string name="dir">Dir</string>
+    <string name="auto">Auto</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="settings">Settings</string>
+    <string name="show_guide">Show guide</string>
+    <string name="hide_guide">Hide guide</string>
+    <string name="scroll_to_top">Scroll to top</string>
+    <string name="app_icon">App logo</string>
+
+    <!-- dialog_auto_confirmation.xml -->
+    <string name="auto_confirm_all_operations">Auto-confirm all operations</string>
+    <string name="warning">Warning</string>
+    <string name="warning_auto_confirmation">Enabling auto-confirmation of operations can lead to uncontrolled loss of important data. By selecting this option, you acknowledge and fully understand the potential risks involved.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- dialog_confirmation.xml -->
+    <string name="confirm_or_deny_operations">Confirm or deny operations</string>
+    <string name="confirm_operations">Confirm operations</string>
+    <string name="cancel_synchronization">Cancel Synchronization</string>
+
+    <!-- dialog_sftp_settings.xml -->
+    <string name="save">Save</string>
+    <string name="base_sftp_path_caption">Base SFTP directory path (uses in auto paste):</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="sftp_address_hint">SFTP address (000.000.0.000:22)</string>
+    <string name="sftp_connection_caption">SFTP connection:</string>
+    <string name="other_settings_caption">Other settings:</string>
+    <string name="disable_deleting">Disable delete function</string>
+    <string name="log_file">Log file</string>
+
+    <!-- overlay.xml -->
+    <string name="open_log_file">Open log file</string>
+    <string name="close">Close</string>
+
+    <!-- dialog_request_permission.xml -->
+    <string name="request_permission">To fully utilize this app, we need your permission to access the storage on your device. This permission is essential for synchronizing and managing your files effectively. Please grant the necessary permission to proceed</string>
+    <string name="request_permission_title">Permission Required</string>
+    <string name="grunt_permission">Grunt permission</string>
+    <string name="close_app">Close app</string>
+
+    <!-- Localization -->
+    <string name="localization_id">en</string>
+</resources>

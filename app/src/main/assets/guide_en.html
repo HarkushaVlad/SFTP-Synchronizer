@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="guide_styles.css">
+    <title>App User Guide</title>
+</head>
+<body>
+<h1>How to Use the App</h1>
+
+<p>This app allows you to synchronize folder states and files between your phone and an SFTP server.
+    It has several key features to help you keep your directories and files up-to-date.</p>
+
+<h2>Features</h2>
+<ul>
+    <li>Detects new files and replaces older versions on either device (phone or SFTP server).</li>
+    <li>Adds new files from one device to the other.</li>
+    <li>Deletes files to ensure complete directory mirroring between devices.</li>
+</ul>
+
+<h2>Setup</h2>
+<p>To synchronize folders, you need to configure the following settings:</p>
+<ul>
+    <li>Enter SFTP connection details in the settings.</li>
+    <li>Specify the path to the desired directory on both the phone and the SFTP server. Note that
+        directory names must be identical.
+    </li>
+    <li>For files, ensure that file names match between the two devices.</li>
+</ul>
+<p>For phone directory selection, you can use a graphical file picker. For SFTP paths, automatic
+    path filling is available if you specify a base directory in the settings.</p>
+
+<h2>Synchronization Process</h2>
+<p>During synchronization, the app performs the following:</p>
+<ul>
+    <li>If a file needs to be replaced due to being older, you will receive a confirmation prompt to
+        approve or cancel the operation, unless auto-confirm is enabled.
+    </li>
+    <li>File deletions will also prompt for confirmation, unless auto-confirm is enabled.</li>
+    <li>New files are copied without requiring additional confirmation, as data loss is not a
+        concern in this case.
+    </li>
+</ul>
+
+<div class="note">
+    <strong>Note:</strong>
+    Deletion of files can only be detected if the directory has been scanned and its structure
+    logged beforehand. If the structure was not logged, the app will not detect deleted files and
+    may duplicate them if missing on the opposite platform.
+</div>
+
+<h2>Two Files Synchronization Mode</h2>
+<p>This mode is used when synchronizing exactly two files instead of directories. In this mode, file
+    deletion is not supported. Only file replacement and copying are available.</p>
+
+<h2>Additional Features</h2>
+<ul>
+    <li><strong>Auto-Confirm:</strong> Enable the auto-confirm feature to automatically accept all
+        changes without prompts.
+    </li>
+    <li><strong>Logs:</strong> You can view synchronization logs and file operations for
+        troubleshooting purposes. Access logs via the 'Settings' menu.
+    </li>
+</ul>
+
+<h2>Getting Started</h2>
+<ol>
+    <li>Configure the SFTP settings in the 'Settings' menu.</li>
+    <li>Use the 'Choose' button to select the directory or file on your phone.</li>
+    <li>Enter the SFTP path manually or use the 'Auto-Paste' feature to automatically fill it based
+        on the base SFTP directory path specified in the settings.
+    </li>
+    <li>Click 'SYNCHRONIZE' to start the synchronization process.</li>
+</ol>
+
+<a href="https://github.com/HarkushaVlad?tab=repositories"
+   class="github-link">GitHub</a>
+</body>
+</html>

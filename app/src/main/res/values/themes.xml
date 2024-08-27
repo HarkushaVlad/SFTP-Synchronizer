@@ -1,0 +1,22 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SftpSynchronizer" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColorVariant</item>
+        <item name="colorOnPrimary">@color/textColor</item>
+        <item name="colorSecondary">@color/surfaceColor</item>
+        <item name="colorSecondaryVariant">@color/primaryGradientEnd</item>
+        <item name="colorOnSecondary">@color/textColor</item>
+        <item name="colorSurface">@color/surfaceColor</item>
+        <item name="colorOnSurface">@color/textColor</item>
+        <item name="colorError">@color/redGradientStart</item>
+        <item name="colorOnError">@color/textColor</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColorHighlight">@color/accentColor</item>
+        <item name="colorAccent">@color/accentColor</item>
+        <item name="colorButtonNormal">@color/primaryColor</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <style name="Theme.SftpSynchronizer" parent="Base.Theme.SftpSynchronizer" />
+</resources>

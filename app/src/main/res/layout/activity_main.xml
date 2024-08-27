@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_gradient"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/spinningAppIconImageView"
+        android:layout_width="800dp"
+        android:layout_height="800dp"
+        android:contentDescription="@string/app_icon"
+        android:src="@drawable/sftp_synchronizer_logo_transparent_blur"
+        android:alpha="0.1"
+        android:background="@android:color/transparent"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="-350dp" />
+
+    <ScrollView
+        android:id="@+id/mainScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:padding="16dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="380dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:onClick="resetChooseButtonsState">
+
+            <TextView
+                android:id="@+id/currentPhonePathCaption"
+                style="@style/plainTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/current_phone_path"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/currentSftpPathCaption"
+                style="@style/plainTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/current_sftp_path"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/phonePathInput" />
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/currentPhonePathScrollView"
+                android:layout_width="294dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                android:fillViewport="true"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/currentPhonePathCaption">
+
+                <TextView
+                    android:id="@+id/currentPhonePath"
+                    style="@style/plainTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_phone_path" />
+            </androidx.core.widget.NestedScrollView>
+
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/currentSftpPathScrollView"
+                android:layout_width="294dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                android:fillViewport="true"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/currentSftpPathCaption">
+
+                <TextView
+                    android:id="@+id/currentSftpPath"
+                    style="@style/plainTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_sftp_path" />
+            </androidx.core.widget.NestedScrollView>
+
+            <EditText
+                android:id="@+id/phonePathInput"
+                style="@style/editTextStyle"
+                android:layout_width="291dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:hint="@string/phone_path_input_hint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/currentPhonePathScrollView"
+                tools:ignore="TextFields" />
+
+            <EditText
+                android:id="@+id/sftpPathInput"
+                style="@style/editTextStyle"
+                android:layout_width="291dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:hint="@string/sftp_path_input_hint"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/currentSftpPathScrollView" />
+
+            <android.widget.Button
+                android:id="@+id/chooseFileButton"
+                style="@style/buttonStyle"
+                android:layout_width="81dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/file"
+                android:textSize="13sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/phonePathInput"
+                app:layout_constraintTop_toBottomOf="@+id/currentPhonePathScrollView" />
+
+            <android.widget.Button
+                android:id="@+id/chooseButton"
+                style="@style/buttonStyle"
+                android:layout_width="81dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/choose"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/phonePathInput"
+                app:layout_constraintTop_toBottomOf="@+id/currentPhonePathScrollView" />
+
+            <android.widget.Button
+                android:id="@+id/chooseDirectoryButton"
+                style="@style/buttonStyle"
+                android:layout_width="81dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/dir"
+                android:textSize="13sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/phonePathInput"
+                app:layout_constraintTop_toBottomOf="@+id/currentPhonePathScrollView" />
+
+            <android.widget.Button
+                android:id="@+id/autoPasteButton"
+                style="@style/inactiveButtonStyle"
+                android:layout_width="81dp"
+                android:layout_height="46dp"
+                android:layout_marginTop="12dp"
+                android:text="@string/auto"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/sftpPathInput"
+                app:layout_constraintTop_toBottomOf="@+id/currentSftpPathScrollView" />
+
+            <android.widget.Button
+                android:id="@+id/syncButton"
+                style="@style/inactiveButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/synchronize"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sftpPathInput" />
+
+            <android.widget.Button
+                android:id="@+id/openMenuButton"
+                style="@style/buttonStyle"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:drawableStart="@drawable/settings_icon"
+                android:text="@string/settings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/syncButton" />
+
+            <CheckBox
+                android:id="@+id/autoConfirmCheckBox"
+                style="@style/checkBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="196dp"
+                android:text="@string/auto_confirm_all_operations"
+                app:buttonTint="@color/accentColor"
+                app:layout_constraintEnd_toStartOf="@+id/openMenuButton"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/syncButton" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/howToConstraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/autoConfirmCheckBox">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/toggleHowToButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/how_to_toggle_button"
+                    android:text="@string/show_guide"
+                    android:textColor="@color/textColor"
+                    android:textSize="14sp"
+                    app:backgroundTint="@null"
+                    app:icon="@drawable/keyboard_arrow_down_icon"
+                    app:iconGravity="textEnd"
+                    app:iconPadding="0dp"
+                    app:iconSize="28dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <FrameLayout
+                    android:id="@+id/howToNestedFrameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:background="@drawable/how_to_nested_frame_layout"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/toggleHowToButton"
+                    android:descendantFocusability="blocksDescendants">
+
+                    <WebView
+                        android:id="@+id/howToWebView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none" />
+
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabScrollToTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:contentDescription="@string/scroll_to_top"
+        android:elevation="0dp"
+        android:src="@drawable/keyboard_arrow_up_icon"
+        android:visibility="gone"
+        app:backgroundTint="@color/fabBg"
+        app:elevation="0dp"
+        app:fabSize="normal"
+        app:maxImageSize="50dp"
+        app:tint="@color/hintColor" />
+
+    <!-- Overlay -->
+    <include
+        layout="@layout/overlay"
+        android:visibility="gone" />
+
+</RelativeLayout>

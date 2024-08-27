@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="textColor">#FFFFFF</color>
+    <color name="hintText">#80FFFFFF</color>
+    <color name="hintColor">#65CBB4</color>
+    <color name="primaryColor">#42A3A3</color>
+    <color name="primaryColorVariant">#213C65</color>
+    <color name="surfaceColor">#5FB0B7</color>
+    <color name="strokeColor">#65CBB4</color>
+    <color name="accentColor">#65CBB4</color>
+    <color name="overlayBackgroundColor">#E6263A56</color>
+    <color name="overlayItemBg">#803F758A</color>
+    <color name="overlayErrorItemBg">#80904554</color>
+    <color name="howToBg">#66426FA3</color>
+    <color name="fabBg">#CC3F758A</color>
+
+    <color name="bgGradientStart">#287160</color>
+    <color name="bgGradientCenter">#213C65</color>
+    <color name="bgGradientEnd">#3A4370</color>
+
+    <color name="primaryGradientStart">#426FA3</color>
+    <color name="primaryGradientEnd">#5FB0B7</color>
+    <color name="primaryGradientPressedStart">#5384BD</color>
+    <color name="primaryGradientPressedEnd">#71C4CC</color>
+
+    <color name="dialogGradientStart">#F23F618A</color>
+    <color name="dialogGradientEnd">#F24E969C</color>
+
+    <color name="redGradientStart">#904554</color>
+    <color name="redGradientEnd">#AB578A</color>
+    <color name="redGradientPressedStart">#A35464</color>
+    <color name="redGradientPressedEnd">#BF679D</color>
+
+    <color name="greyGradientStart">#72889F</color>
+    <color name="greyGradientEnd">#99B0B3</color>
+</resources>
+
