@@ -39,6 +39,7 @@
     <string name="set_base_sftp_directory">Set the base SFTP directory in the settings</string>
     <string name="phone_path_empty">Phone path is empty</string>
     <string name="permission_for_storage_should_granted">Permission for storage should be granted</string>
+    <string name="version">version</string>
 
     <!-- Exceptions.java -->
     <string name="both_paths_not_exist_exception">At least one path should exist</string>

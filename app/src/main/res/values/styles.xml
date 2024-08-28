@@ -48,4 +48,8 @@
         <item name="android:lineSpacingExtra">5sp</item>
     </style>
 
+    <style name="versionTextStyle">
+        <item name="android:textColor">@color/versionColor</item>
+        <item name="android:textSize">10sp</item>
+    </style>
 </resources>

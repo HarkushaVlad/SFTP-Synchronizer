@@ -13,6 +13,7 @@
     <color name="overlayErrorItemBg">#80904554</color>
     <color name="howToBg">#66426FA3</color>
     <color name="fabBg">#CC3F758A</color>
+    <color name="versionColor">#4D65CBB4</color>
 
     <color name="bgGradientStart">#287160</color>
     <color name="bgGradientCenter">#213C65</color>

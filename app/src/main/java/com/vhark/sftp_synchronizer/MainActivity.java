@@ -111,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
     private ImageView overlayAppIconImageView;
     private ImageView spinningAppIconImageView;
     private WebView howToWebView;
+    private TextView versionTextView;
 
     private volatile boolean cancelRequested = false;
     private boolean isHowToExpanded = false;
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         setupAnimations();
         updateAutoPasteButton();
         updateSyncButton();
+        setVersionText();
     }
 
     private void openDirectoryPicker() {
@@ -441,6 +443,17 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         overlayAppIconImageView = findViewById(R.id.overlayAppIconImageView);
         spinningAppIconImageView = findViewById(R.id.spinningAppIconImageView);
         howToWebView = findViewById(R.id.howToWebView);
+        versionTextView = findViewById(R.id.versionTextView);
+    }
+
+    private void setVersionText() {
+        String versionName = null;
+        try {
+            versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            return;
+        }
+        versionTextView.setText(versionName);
     }
 
     private void openMenu() {

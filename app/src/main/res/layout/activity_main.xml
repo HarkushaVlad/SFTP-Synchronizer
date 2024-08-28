@@ -11,13 +11,13 @@
         android:id="@+id/spinningAppIconImageView"
         android:layout_width="800dp"
         android:layout_height="800dp"
-        android:contentDescription="@string/app_icon"
-        android:src="@drawable/sftp_synchronizer_logo_transparent_blur"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="-350dp"
         android:alpha="0.1"
         android:background="@android:color/transparent"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="-350dp" />
+        android:contentDescription="@string/app_icon"
+        android:src="@drawable/sftp_synchronizer_logo_transparent_blur" />
 
     <ScrollView
         android:id="@+id/mainScrollView"
@@ -254,11 +254,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:background="@drawable/how_to_nested_frame_layout"
+                    android:descendantFocusability="blocksDescendants"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toggleHowToButton"
-                    android:descendantFocusability="blocksDescendants">
+                    app:layout_constraintTop_toBottomOf="@+id/toggleHowToButton">
 
                     <WebView
                         android:id="@+id/howToWebView"
@@ -269,6 +269,19 @@
                 </FrameLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/versionTextView"
+                style="@style/versionTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/version"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/howToConstraintLayout"
+                app:layout_constraintVertical_bias="1.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
