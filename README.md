@@ -4,6 +4,8 @@ SFTP-Synchronizer is an Android application designed to synchronize folder state
 your mobile device and an SFTP server. The app offers a set of features to ensure that your
 directories and files remain up-to-date across both platforms.
 
+![sftp-collage](https://github.com/user-attachments/assets/5ee4961f-f977-4421-8fc8-23ffd87a9cab)
+
 ## Features
 
 - **File Synchronization**: Detects new files and replaces older versions on either the phone or the
