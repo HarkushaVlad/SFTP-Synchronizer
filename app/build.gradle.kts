@@ -42,4 +42,7 @@ dependencies {
 
     implementation(libs.jsch)
     implementation(libs.commons.io)
+
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 }

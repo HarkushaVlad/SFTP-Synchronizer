@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.vhark.sftp_synchronizer.MainActivity;
 import com.vhark.sftp_synchronizer.R;
+import com.vhark.sftp_synchronizer.UI.UIComponents;
 import com.vhark.sftp_synchronizer.constant.PrefsConstants;
 
 public class AutoConfirmationDialogFragment extends DialogFragment {
@@ -42,7 +42,8 @@ public class AutoConfirmationDialogFragment extends DialogFragment {
                 v -> {
                     PrefsConstants.instance().storeValueBoolean(KEY_AUTO_CONFIRM_ENABLED, true);
                     autoConfirmCheckBox.setChecked(true);
-                    showToast(getString(R.string.auto_confirmation_enabled));
+                    UIComponents.showToast(
+                            getString(R.string.auto_confirmation_enabled), getActivity());
                     dismiss();
                 });
 
@@ -70,9 +71,5 @@ public class AutoConfirmationDialogFragment extends DialogFragment {
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             getDialog().getWindow().setAttributes(params);
         }
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

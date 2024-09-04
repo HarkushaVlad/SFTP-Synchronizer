@@ -1,5 +1,6 @@
 package com.vhark.sftp_synchronizer.fragment;
 
+import static com.vhark.sftp_synchronizer.UI.UIComponents.showToast;
 import static com.vhark.sftp_synchronizer.constant.PrefsKeys.*;
 
 import android.graphics.Color;
@@ -12,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,7 +63,7 @@ public class SftpSettingsDialogFragment extends DialogFragment {
                     if (validateInputs()) {
                         storeAllSftpSettings();
                         viewModel.requestUpdateButtons();
-                        showToast(getString(R.string.saved));
+                        showToast(getString(R.string.saved), getActivity());
                         dismiss();
                     }
                 });
@@ -89,13 +89,13 @@ public class SftpSettingsDialogFragment extends DialogFragment {
         String password = passwordInput.getText().toString().trim();
 
         if (TextUtils.isEmpty(sftpAddress)) {
-            showToast(getString(R.string.sftp_address_cannot_empty));
+            showToast(getString(R.string.sftp_address_cannot_empty), getActivity());
             return false;
         } else if (TextUtils.isEmpty(username)) {
-            showToast(getString(R.string.username_cannot_empty));
+            showToast(getString(R.string.username_cannot_empty), getActivity());
             return false;
         } else if (TextUtils.isEmpty(password)) {
-            showToast(getString(R.string.password_cannot_empty));
+            showToast(getString(R.string.password_cannot_empty), getActivity());
             return false;
         }
 
@@ -124,9 +124,5 @@ public class SftpSettingsDialogFragment extends DialogFragment {
                 PrefsConstants.instance().fetchValueString(KEY_DEFAULT_SFTP_PATH));
         disableDeleteFunction.setChecked(
                 PrefsConstants.instance().fetchValueBoolean(KEY_DELETE_FUNCTION_DISABLED));
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

@@ -3,15 +3,13 @@ package com.vhark.sftp_synchronizer;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+import static com.vhark.sftp_synchronizer.UI.UIComponents.isVisible;
 import static com.vhark.sftp_synchronizer.constant.LogTags.PHONE_LOG_TAG;
 import static com.vhark.sftp_synchronizer.constant.LogTags.SFTP_LOG_TAG;
 import static com.vhark.sftp_synchronizer.constant.PrefsKeys.*;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,18 +19,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.TransitionManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
-import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResult;
@@ -45,12 +33,10 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jcraft.jsch.SftpException;
+import com.vhark.sftp_synchronizer.UI.UIComponents;
 import com.vhark.sftp_synchronizer.constant.LogsPath;
 import com.vhark.sftp_synchronizer.constant.PrefsConstants;
 import com.vhark.sftp_synchronizer.constant.PrefsKeys;
@@ -82,36 +68,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class MainActivity extends AppCompatActivity implements OperationExecutionListener {
 
-    private ScrollView mainScrollView;
-    private TextView currentPhonePathText;
-    private TextView currentSftpPathText;
-    private EditText pathPhoneInput;
-    private EditText pathSftpInput;
-    private Button chooseButton;
-    private Button chooseDirectoryButton;
-    private Button chooseFileButton;
-    private Button autoPasteButton;
-    private Button syncButton;
-    private Button openMenuButton;
-    private ConstraintLayout overlayLayout;
-    private TextView overlayTitleTextView;
-    private ScrollView overlayScrollView;
-    private TextView overlayTextView;
-    private ProgressBar overlayProgressBar;
-    private Button closeOverlayButton;
-    private Button openLogsButton;
-    private CheckBox autoConfirmCheckBox;
+    private UIComponents uiComponents;
     private SharedViewModel viewModel;
-    private NestedScrollView currentPhonePathScrollView;
-    private NestedScrollView currentSftpPathScrollView;
-    private MaterialButton toggleHowToButton;
-    private ConstraintLayout howToConstraintLayout;
-    private FrameLayout howToNestedFrameLayout;
-    private FloatingActionButton fabScrollToTop;
-    private ImageView overlayAppIconImageView;
-    private ImageView spinningAppIconImageView;
-    private WebView howToWebView;
-    private TextView versionTextView;
 
     private volatile boolean cancelRequested = false;
     private boolean isHowToExpanded = false;
@@ -122,18 +80,16 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE
     };
 
-    private ObjectAnimator fadeLogoSynchronizingAnimation;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PrefsConstants.instance(this.getApplicationContext());
+        uiComponents = new UIComponents(this);
+        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
         requestPermissions();
-        initializeViews();
         loadAllPrefs();
         setupListeners();
-        setupAnimations();
         updateAutoPasteButton();
         updateSyncButton();
         setVersionText();
@@ -152,9 +108,9 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
                                 && result.getData() != null
                                 && result.getData().getData() != null) {
                             String path = replacePrimaryAndroidPath(result, "/tree/.*:");
-                            pathPhoneInput.setText(path);
+                            uiComponents.getPathPhoneInput().setText(path);
                             storeValue(KEY_PHONE_PATH, path);
-                            updateTextViews();
+                            uiComponents.updateTextViews();
                             resetChooseButtonsState();
                             autoPasteSftpPath();
                         }
@@ -176,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
                                 && result.getData() != null
                                 && result.getData().getData() != null) {
                             String path = replacePrimaryAndroidPath(result, "/document/primary:");
-                            pathPhoneInput.setText(path);
+                            uiComponents.getPathPhoneInput().setText(path);
                             storeValue(KEY_PHONE_PATH, path);
-                            updateTextViews();
+                            uiComponents.updateTextViews();
                             resetChooseButtonsState();
                             autoPasteSftpPath();
                         }
@@ -213,16 +169,18 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
     }
 
     private void storeAllDirectoryPaths() {
-        storeValue(KEY_PHONE_PATH, pathPhoneInput.getText().toString());
-        storeValue(KEY_SFTP_PATH, pathSftpInput.getText().toString());
-        updateTextViews();
+        storeValue(KEY_PHONE_PATH, uiComponents.getPathPhoneInput().getText().toString());
+        storeValue(KEY_SFTP_PATH, uiComponents.getPathSftpInput().getText().toString());
+        uiComponents.updateTextViews();
     }
 
     private void loadAllPrefs() {
-        loadStoredValueIntoInput(pathPhoneInput, KEY_PHONE_PATH);
-        loadStoredValueIntoInput(pathSftpInput, KEY_SFTP_PATH);
-        updateTextViews();
-        autoConfirmCheckBox.setChecked(loadStoredBooleanValue(KEY_AUTO_CONFIRM_ENABLED));
+        loadStoredValueIntoInput(uiComponents.getPathPhoneInput(), KEY_PHONE_PATH);
+        loadStoredValueIntoInput(uiComponents.getPathSftpInput(), KEY_SFTP_PATH);
+        uiComponents.updateTextViews();
+        uiComponents
+                .getAutoConfirmCheckBox()
+                .setChecked(loadStoredBooleanValue(KEY_AUTO_CONFIRM_ENABLED));
     }
 
     private void autoPasteSftpPath() {
@@ -238,10 +196,10 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
                         .replaceAll(
                                 Environment.getExternalStorageDirectory().getAbsolutePath(), "");
         String absoluteSftpPath = storedDefaultSftpPath + sparePath;
-        pathSftpInput.setText(absoluteSftpPath);
-        showToast("SFTP path has been auto-pasted");
+        uiComponents.getPathSftpInput().setText(absoluteSftpPath);
+        uiComponents.showToast("SFTP path has been auto-pasted");
         storeValue(KEY_SFTP_PATH, absoluteSftpPath);
-        updateTextViews();
+        uiComponents.updateTextViews();
     }
 
     public void updateAutoPasteButton() {
@@ -261,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            updateTextViews();
+            uiComponents.updateTextViews();
             updateSyncButton();
         }
 
@@ -269,63 +227,22 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         public void afterTextChanged(Editable s) {}
     }
 
-    private void updateTextViews() {
-        currentPhonePathText.setText(pathPhoneInput.getText().toString());
-        currentSftpPathText.setText(pathSftpInput.getText().toString());
-
-        if (currentPhonePathText.getText().length() == 0) {
-            currentPhonePathText.setText(getString(R.string.no_phone_path));
-        }
-
-        if (currentSftpPathText.getText().length() == 0) {
-            currentSftpPathText.setText(getString(R.string.no_sftp_path));
-        }
-
-        currentPhonePathText.post(
-                () -> {
-                    int textViewHeight = currentPhonePathText.getHeight();
-                    int maxHeight = getValueInPxFromDp(100);
-
-                    if (textViewHeight > maxHeight) {
-                        currentPhonePathScrollView.getLayoutParams().height = maxHeight;
-                    } else {
-                        currentPhonePathScrollView.getLayoutParams().height =
-                                ViewGroup.LayoutParams.WRAP_CONTENT;
-                    }
-                    currentPhonePathScrollView.requestLayout();
-                });
-
-        currentSftpPathText.post(
-                () -> {
-                    int textViewHeight = currentSftpPathText.getHeight();
-                    int maxHeight = getValueInPxFromDp(100);
-
-                    if (textViewHeight > maxHeight) {
-                        currentSftpPathScrollView.getLayoutParams().height = maxHeight;
-                    } else {
-                        currentSftpPathScrollView.getLayoutParams().height =
-                                ViewGroup.LayoutParams.WRAP_CONTENT;
-                    }
-                    currentSftpPathScrollView.requestLayout();
-                });
-    }
-
     private void updateSyncButton() {
         if (isOldPermissionVersion() && !oldPermissionsGranted()) {
-            setSyncButtonInactive();
+            uiComponents.setSyncButtonInactive();
             return;
         }
 
         if (!isSftpCredentialsFilled()) {
-            setSyncButtonInactive();
+            uiComponents.setSyncButtonInactive();
             return;
         }
 
-        String[] phonePaths = pathPhoneInput.getText().toString().split("/");
-        String[] sftpPaths = pathSftpInput.getText().toString().split("/");
+        String[] phonePaths = uiComponents.getPathPhoneInput().getText().toString().split("/");
+        String[] sftpPaths = uiComponents.getPathSftpInput().getText().toString().split("/");
 
         if (String.join("", phonePaths).isEmpty() || String.join("", sftpPaths).isEmpty()) {
-            setSyncButtonInactive();
+            uiComponents.setSyncButtonInactive();
             return;
         }
 
@@ -333,11 +250,11 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         String sftpPath = sftpPaths[sftpPaths.length - 1];
 
         if (phonePath.equals(sftpPath)) {
-            setSyncButtonActive();
+            uiComponents.setSyncButtonActive();
             return;
         }
 
-        setSyncButtonInactive();
+        uiComponents.setSyncButtonInactive();
     }
 
     private boolean isSftpCredentialsFilled() {
@@ -345,16 +262,6 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         String user = PrefsConstants.instance().fetchValueString(KEY_USERNAME);
         String password = PrefsConstants.instance().fetchValueString(KEY_PASSWORD);
         return !sftpAddress.isBlank() && !user.isBlank() && !password.isBlank();
-    }
-
-    private void setSyncButtonActive() {
-        syncButton.setBackgroundResource(R.drawable.button);
-        syncButton.setTextColor(ContextCompat.getColor(this, R.color.textColor));
-    }
-
-    private void setSyncButtonInactive() {
-        syncButton.setBackgroundResource(R.drawable.inactive_button);
-        syncButton.setTextColor(ContextCompat.getColor(this, R.color.hintText));
     }
 
     private void requestPermissions() {
@@ -392,11 +299,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
 
     @Override
     public void onOperationExecute(String information) {
-        runOnUiThread(() -> overlayTextView.append(information));
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        runOnUiThread(() -> uiComponents.getOverlayTextView().append(information));
     }
 
     private void showConfirmationDialog(String title, String message, CountDownLatch latch) {
@@ -409,41 +312,8 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
                 });
     }
 
-    private int getValueInPxFromDp(int valueInDp) {
+    public int getValueInPxFromDp(int valueInDp) {
         return (int) (valueInDp * getResources().getDisplayMetrics().density);
-    }
-
-    private void initializeViews() {
-        viewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-        mainScrollView = findViewById(R.id.mainScrollView);
-        currentPhonePathText = findViewById(R.id.currentPhonePath);
-        currentSftpPathText = findViewById(R.id.currentSftpPath);
-        pathPhoneInput = findViewById(R.id.phonePathInput);
-        pathSftpInput = findViewById(R.id.sftpPathInput);
-        chooseButton = findViewById(R.id.chooseButton);
-        chooseDirectoryButton = findViewById(R.id.chooseDirectoryButton);
-        chooseFileButton = findViewById(R.id.chooseFileButton);
-        autoPasteButton = findViewById(R.id.autoPasteButton);
-        syncButton = findViewById(R.id.syncButton);
-        openMenuButton = findViewById(R.id.openMenuButton);
-        overlayLayout = findViewById(R.id.overlay);
-        overlayTitleTextView = findViewById(R.id.overlayTitleTextView);
-        overlayScrollView = findViewById(R.id.overlayScrollView);
-        overlayTextView = findViewById(R.id.overlayTextView);
-        overlayProgressBar = findViewById(R.id.overlayProgressBar);
-        closeOverlayButton = findViewById(R.id.closeSynchronizationButton);
-        openLogsButton = findViewById(R.id.openLogsButton);
-        autoConfirmCheckBox = findViewById(R.id.autoConfirmCheckBox);
-        currentPhonePathScrollView = findViewById(R.id.currentPhonePathScrollView);
-        currentSftpPathScrollView = findViewById(R.id.currentSftpPathScrollView);
-        toggleHowToButton = findViewById(R.id.toggleHowToButton);
-        howToConstraintLayout = findViewById(R.id.howToConstraintLayout);
-        howToNestedFrameLayout = findViewById(R.id.howToNestedFrameLayout);
-        fabScrollToTop = findViewById(R.id.fabScrollToTop);
-        overlayAppIconImageView = findViewById(R.id.overlayAppIconImageView);
-        spinningAppIconImageView = findViewById(R.id.spinningAppIconImageView);
-        howToWebView = findViewById(R.id.howToWebView);
-        versionTextView = findViewById(R.id.versionTextView);
     }
 
     private void setVersionText() {
@@ -453,7 +323,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         } catch (PackageManager.NameNotFoundException e) {
             return;
         }
-        versionTextView.setText(versionName);
+        uiComponents.getVersionTextView().setText(versionName);
     }
 
     private void openMenu() {
@@ -462,8 +332,8 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
     }
 
     private void autoConfirmationCheckBoxClick() {
-        if (autoConfirmCheckBox.isChecked()) {
-            autoConfirmCheckBox.setChecked(false);
+        if (uiComponents.getAutoConfirmCheckBox().isChecked()) {
+            uiComponents.getAutoConfirmCheckBox().setChecked(false);
             AutoConfirmationDialogFragment dialog = new AutoConfirmationDialogFragment();
             dialog.show(getSupportFragmentManager(), "AutoConfirmationDialog");
         } else {
@@ -474,9 +344,9 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
     private void proceedAutoPaste() {
         updateAutoPasteButton();
         if (loadStoredStringValue(KEY_DEFAULT_SFTP_PATH).isBlank()) {
-            showToast(getString(R.string.set_base_sftp_directory));
-        } else if (pathPhoneInput.getText().toString().isBlank()) {
-            showToast(getString(R.string.phone_path_empty));
+            uiComponents.showToast(getString(R.string.set_base_sftp_directory));
+        } else if (uiComponents.getPathPhoneInput().getText().toString().isBlank()) {
+            uiComponents.showToast(getString(R.string.phone_path_empty));
         } else {
             autoPasteSftpPath();
         }
@@ -489,36 +359,30 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
     }
 
     private void chooseButtonClick() {
-        chooseButton.setVisibility(View.GONE);
-        chooseDirectoryButton.setVisibility(View.VISIBLE);
-        animateFileButton();
+        uiComponents.getChooseButton().setVisibility(View.GONE);
+        uiComponents.getChooseDirectoryButton().setVisibility(View.VISIBLE);
+        uiComponents.animateFileButton();
     }
 
     private void setupListeners() {
-        openMenuButton.setOnClickListener(v -> openMenu());
-        autoConfirmCheckBox.setOnClickListener(v -> autoConfirmationCheckBoxClick());
-        chooseDirectoryButton.setOnClickListener(v -> openDirectoryPicker());
-        autoPasteButton.setOnClickListener(v -> proceedAutoPaste());
-        syncButton.setOnClickListener(v -> syncButtonClick());
-        chooseButton.setOnClickListener(v -> chooseButtonClick());
-        chooseDirectoryButton.setOnClickListener(v -> openDirectoryPicker());
-        chooseFileButton.setOnClickListener(v -> openFilePicker());
-        openLogsButton.setOnClickListener(v -> openLogFile(LogsPath.LOGS));
-        closeOverlayButton.setOnClickListener(v -> closeOverlay());
-        toggleHowToButton.setOnClickListener(v -> toggleHowToScrollView());
-        fabScrollToTop.setOnClickListener(v -> scrollToTop());
-        pathPhoneInput.addTextChangedListener(new PathTextWatcher());
-        pathSftpInput.addTextChangedListener(new PathTextWatcher());
+        uiComponents.getOpenMenuButton().setOnClickListener(v -> openMenu());
+        uiComponents
+                .getAutoConfirmCheckBox()
+                .setOnClickListener(v -> autoConfirmationCheckBoxClick());
+        uiComponents.getChooseDirectoryButton().setOnClickListener(v -> openDirectoryPicker());
+        uiComponents.getAutoPasteButton().setOnClickListener(v -> proceedAutoPaste());
+        uiComponents.getSyncButton().setOnClickListener(v -> syncButtonClick());
+        uiComponents.getChooseButton().setOnClickListener(v -> chooseButtonClick());
+        uiComponents.getChooseDirectoryButton().setOnClickListener(v -> openDirectoryPicker());
+        uiComponents.getChooseFileButton().setOnClickListener(v -> openFilePicker());
+        uiComponents.getOpenLogsButton().setOnClickListener(v -> openLogFile(LogsPath.LOGS));
+        uiComponents.getCloseOverlayButton().setOnClickListener(v -> uiComponents.hideOverlay());
+        uiComponents.getToggleHowToButton().setOnClickListener(v -> toggleHowToScrollView());
+        uiComponents.getFabScrollToTop().setOnClickListener(v -> scrollToTop());
+        uiComponents.getPathPhoneInput().addTextChangedListener(new PathTextWatcher());
+        uiComponents.getPathSftpInput().addTextChangedListener(new PathTextWatcher());
         setupSharedObservers();
-        setupScrollButton();
         setupBackButtonHandler();
-        setupHowToWebView();
-    }
-
-    private void setupHowToWebView() {
-        howToWebView.setBackgroundColor(Color.TRANSPARENT);
-        howToWebView.loadUrl(
-                "file:///android_asset/guide_" + getString(R.string.localization_id) + ".html");
     }
 
     private void setupSharedObservers() {
@@ -545,78 +409,30 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
                         });
     }
 
-    private void setupScrollButton() {
-        mainScrollView
-                .getViewTreeObserver()
-                .addOnScrollChangedListener(
-                        () -> {
-                            int scrollY = mainScrollView.getScrollY();
-                            if (scrollY > getValueInPxFromDp(300)) {
-                                fabScrollToTop.setVisibility(View.VISIBLE);
-                            } else {
-
-                                fabScrollToTop.setVisibility(View.GONE);
-                            }
-                        });
-    }
-
     private void handleBackButtonPress() {
-        if (isVisible(closeOverlayButton)) {
-            closeOverlay();
+        if (isVisible(uiComponents.getCloseOverlayButton())) {
+            uiComponents.hideOverlay();
             return;
         }
 
-        if (isHowToExpanded && isVisible(fabScrollToTop)) {
+        if (isHowToExpanded && isVisible(uiComponents.getFabScrollToTop())) {
             scrollToTop();
             return;
         }
 
-        if (!isVisible(overlayLayout)) {
+        if (!isVisible(uiComponents.getOverlayLayout())) {
             if (backPressedOnce) {
                 finishAffinity();
             } else {
-                showToast("Press back again to exit");
+                uiComponents.showToast("Press back again to exit");
                 backPressedOnce = true;
                 new Handler().postDelayed(() -> backPressedOnce = false, 2000);
             }
         }
     }
 
-    private boolean isVisible(View view) {
-        return view.getVisibility() == View.VISIBLE;
-    }
-
-    private void setupAnimations() {
-        setupFadeAnimationSynchronizingLogo();
-        setupSpinningAnimationLogo();
-    }
-
-    private void setupFadeAnimationSynchronizingLogo() {
-        fadeLogoSynchronizingAnimation =
-                ObjectAnimator.ofFloat(overlayAppIconImageView, "alpha", 0f, 0.3f);
-        fadeLogoSynchronizingAnimation.setDuration(500);
-        fadeLogoSynchronizingAnimation.setRepeatCount(ValueAnimator.INFINITE);
-        fadeLogoSynchronizingAnimation.setRepeatMode(ValueAnimator.REVERSE);
-    }
-
-    private void setupSpinningAnimationLogo() {
-        ObjectAnimator spinLogoAnimation =
-                ObjectAnimator.ofFloat(spinningAppIconImageView, "rotation", 0f, 360f);
-        spinLogoAnimation.setDuration(70000);
-        spinLogoAnimation.setInterpolator(new LinearInterpolator());
-        spinLogoAnimation.setRepeatCount(ValueAnimator.INFINITE);
-        spinLogoAnimation.setRepeatMode(ValueAnimator.RESTART);
-        spinLogoAnimation.start();
-    }
-
-    private void closeOverlay() {
-        overlayLayout.setVisibility(View.GONE);
-        closeOverlayButton.setVisibility(View.GONE);
-        openLogsButton.setVisibility(View.GONE);
-    }
-
     private void scrollToTop() {
-        mainScrollView.smoothScrollTo(0, 0);
+        uiComponents.getMainScrollView().smoothScrollTo(0, 0);
     }
 
     public void openLogFile(LogsPath logsPath) {
@@ -624,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         try {
             logFile = StorageUtils.getLogFile(this, logsPath);
         } catch (LogFileCreationException e) {
-            showToast(getString(R.string.cannot_open_log_file));
+            uiComponents.showToast(getString(R.string.cannot_open_log_file));
             return;
         }
 
@@ -643,86 +459,52 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
             Intent chooser = Intent.createChooser(intent, getString(R.string.open_log_file_with));
             startActivity(chooser);
         } else {
-            showToast(getString(R.string.log_file_not_exist));
+            uiComponents.showToast(getString(R.string.log_file_not_exist));
         }
     }
 
-    private void animateFileButton() {
-        chooseFileButton.setVisibility(View.VISIBLE);
-        chooseFileButton
-                .animate()
-                .translationY(145)
-                .setDuration(100)
-                .withEndAction(() -> chooseDirectoryButton.setVisibility(View.VISIBLE))
-                .start();
-    }
-
-    private void animateFileButtonBack() {
-        chooseFileButton
-                .animate()
-                .translationY(0)
-                .setDuration(100)
-                .withEndAction(
-                        () -> {
-                            chooseFileButton.setVisibility(View.INVISIBLE);
-                            chooseDirectoryButton.setVisibility(View.GONE);
-                            chooseButton.setVisibility(View.VISIBLE);
-                        })
-                .start();
-    }
-
     public void resetChooseButtonsState(View view) {
-        if (isVisible(chooseDirectoryButton) || isVisible(chooseFileButton)) {
-            animateFileButtonBack();
+        if (isVisible(uiComponents.getChooseDirectoryButton())
+                || isVisible(uiComponents.getChooseFileButton())) {
+            uiComponents.animateFileButtonBack();
         }
     }
 
     private void resetChooseButtonsState() {
-        if (isVisible(chooseDirectoryButton) || isVisible(chooseFileButton)) {
-            animateFileButtonBack();
+        if (isVisible(uiComponents.getChooseDirectoryButton())
+                || isVisible(uiComponents.getChooseFileButton())) {
+            uiComponents.animateFileButtonBack();
         }
     }
 
     private void toggleHowToScrollView() {
+        ConstraintLayout howToConstraintLayout = uiComponents.getHowToConstraintLayout();
         TransitionManager.beginDelayedTransition(howToConstraintLayout);
         ConstraintSet constraintSet = new ConstraintSet();
         constraintSet.clone(howToConstraintLayout);
 
         if (isHowToExpanded) {
-            closeOpenHowToSection(constraintSet);
+            wrapOpenHowToSection(constraintSet);
         } else {
-            openHowToSection(constraintSet);
+            expandHowToSection(constraintSet);
         }
 
         constraintSet.applyTo(howToConstraintLayout);
         isHowToExpanded = !isHowToExpanded;
     }
 
-    private void openHowToSection(ConstraintSet constraintSet) {
+    private void expandHowToSection(ConstraintSet constraintSet) {
         constraintSet.constrainHeight(R.id.howToNestedFrameLayout, ConstraintSet.WRAP_CONTENT);
-        howToNestedFrameLayout.setVisibility(View.VISIBLE);
-        toggleHowToButton.setBackgroundResource(R.drawable.how_to_toggle_button_expanded);
-        toggleHowToButton.setText(R.string.hide_guide);
-        toggleHowToButton.setIconResource(R.drawable.keyboard_arrow_up_icon);
-        mainScrollView.post(() -> mainScrollView.smoothScrollTo(0, howToConstraintLayout.getTop()));
+        uiComponents.setHowToViewVisible();
     }
 
-    private void closeOpenHowToSection(ConstraintSet constraintSet) {
+    private void wrapOpenHowToSection(ConstraintSet constraintSet) {
         constraintSet.constrainHeight(R.id.howToNestedFrameLayout, 0);
-        howToNestedFrameLayout.setVisibility(View.GONE);
-        new Handler()
-                .postDelayed(
-                        () -> {
-                            toggleHowToButton.setBackgroundResource(
-                                    R.drawable.how_to_toggle_button);
-                            toggleHowToButton.setText(R.string.show_guide);
-                            toggleHowToButton.setIconResource(R.drawable.keyboard_arrow_down_icon);
-                        },
-                        300);
+        uiComponents.hideHowToView();
     }
 
     private void synchronize() {
-        if (isSyncButtonDisabled()) {
+        if (uiComponents.isSyncButtonDisabled()) {
             handleSyncButtonDisabled();
             return;
         }
@@ -732,38 +514,28 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         new Thread(this::performSynchronization).start();
     }
 
-    private boolean isSyncButtonDisabled() {
-        return syncButton.getCurrentTextColor() == ContextCompat.getColor(this, R.color.hintText);
-    }
-
     private void handleSyncButtonDisabled() {
         if (isOldPermissionVersion() && !oldPermissionsGranted()) {
-            showToast(getString(R.string.permission_for_storage_should_granted));
+            uiComponents.showToast(getString(R.string.permission_for_storage_should_granted));
             return;
         }
         if (!isSftpCredentialsFilled()) {
-            showToast(getString(R.string.sftp_credentials_should_filled));
+            uiComponents.showToast(getString(R.string.sftp_credentials_should_filled));
             return;
         }
 
-        if (pathPhoneInput.getText().length() == 0 || pathSftpInput.getText().length() == 0) {
-            showToast(getString(R.string.paths_cant_be_empty));
+        if (uiComponents.getPathPhoneInput().getText().length() == 0
+                || uiComponents.getPathSftpInput().getText().length() == 0) {
+            uiComponents.showToast(getString(R.string.paths_cant_be_empty));
             return;
         }
 
-        showToast(getString(R.string.paths_must_have_same_target));
+        uiComponents.showToast(getString(R.string.paths_must_have_same_target));
     }
 
     private void initializeSynchronizationUI() {
         cancelRequested = false;
-        overlayTitleTextView.setBackgroundResource(R.drawable.overlay_items_background);
-        overlayScrollView.setBackgroundResource(R.drawable.overlay_items_background);
-        overlayLayout.setVisibility(View.VISIBLE);
-        overlayProgressBar.setVisibility(View.VISIBLE);
-        overlayTitleTextView.setText(getString(R.string.sync_in_progress_title));
-        if (fadeLogoSynchronizingAnimation != null) {
-            fadeLogoSynchronizingAnimation.start();
-        }
+        uiComponents.setOverlayViewVisible();
     }
 
     private void performSynchronization() {
@@ -796,7 +568,10 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         PhoneStorage phoneStorage = new PhoneStorage(this, targetPhonePath);
         String mergePath = phoneStorage.getMergePath();
         runOnUiThread(
-                () -> overlayTextView.setText(getString(R.string.merge_path_message, mergePath)));
+                () ->
+                        uiComponents
+                                .getOverlayTextView()
+                                .setText(getString(R.string.merge_path_message, mergePath)));
         return phoneStorage;
     }
 
@@ -891,7 +666,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
             throws InterruptedException, SftpException, IOException {
         boolean copyFromPhone = copyFiles.containsKey(targetPhonePath.toString());
 
-        if (!autoConfirmCheckBox.isChecked()) {
+        if (!uiComponents.getAutoConfirmCheckBox().isChecked()) {
             String replaceTitle = getString(R.string.replace_title);
             String replaceMessage =
                     StorageUtils.getReplaceFileMessage(this, copyFiles, copyFromPhone);
@@ -1032,7 +807,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
 
         if (!pathsForDeletingOnPhone.isEmpty() || !pathsForDeletingOnSftp.isEmpty()) {
 
-            if (!autoConfirmCheckBox.isChecked()) {
+            if (!uiComponents.getAutoConfirmCheckBox().isChecked()) {
                 String deleteTitle = getString(R.string.delete_title);
                 String deleteMessage =
                         StorageUtils.getDeleteMessage(
@@ -1081,7 +856,7 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
 
         if (!filesToCopyFromSftpToPhone.isEmpty() || !filesToCopyFromPhoneToSftp.isEmpty()) {
 
-            if (!autoConfirmCheckBox.isChecked()) {
+            if (!uiComponents.getAutoConfirmCheckBox().isChecked()) {
                 String updateTitle = getString(R.string.update_title);
                 String updateMessage =
                         StorageUtils.getUpdateMessage(
@@ -1110,8 +885,10 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
 
         runOnUiThread(
                 () -> {
-                    overlayTitleTextView.setText(getString(R.string.synchronization_successful));
-                    showToast(getString(R.string.success));
+                    uiComponents
+                            .getOverlayTitleTextView()
+                            .setText(getString(R.string.synchronization_successful));
+                    uiComponents.showToast(getString(R.string.success));
                 });
     }
 
@@ -1119,48 +896,57 @@ public class MainActivity extends AppCompatActivity implements OperationExecutio
         e.printStackTrace();
         runOnUiThread(
                 () -> {
-                    showToast(e.getMessage());
+                    uiComponents.showToast(e.getMessage());
                     onOperationExecute("\n\n!!!&gt; " + e.getMessage());
-                    overlayTitleTextView.setText(getString(R.string.synchronization_failed));
-                    overlayTitleTextView.setBackgroundResource(
-                            R.drawable.overlay_items_error_background);
-                    overlayScrollView.setBackgroundResource(
-                            R.drawable.overlay_items_error_background);
+                    uiComponents
+                            .getOverlayTitleTextView()
+                            .setText(getString(R.string.synchronization_failed));
+                    uiComponents
+                            .getOverlayTitleTextView()
+                            .setBackgroundResource(R.drawable.overlay_items_error_background);
+                    uiComponents
+                            .getOverlayScrollView()
+                            .setBackgroundResource(R.drawable.overlay_items_error_background);
                 });
     }
 
     private void finalizeSynchronizationUI() {
         runOnUiThread(
                 () -> {
-                    if (fadeLogoSynchronizingAnimation != null) {
-                        fadeLogoSynchronizingAnimation.end();
-                        overlayAppIconImageView.setAlpha(0f);
+                    if (uiComponents.getFadeLogoSynchronizingAnimation() != null) {
+                        uiComponents.getFadeLogoSynchronizingAnimation().end();
+                        uiComponents.getOverlayAppIconImageView().setAlpha(0f);
                     }
 
                     if (cancelRequested) {
-                        overlayTitleTextView.setBackgroundResource(
-                                R.drawable.overlay_items_error_background);
-                        overlayScrollView.setBackgroundResource(
-                                R.drawable.overlay_items_error_background);
-                        overlayTitleTextView.setText(getString(R.string.synchronization_canceled));
+                        uiComponents
+                                .getOverlayTitleTextView()
+                                .setBackgroundResource(R.drawable.overlay_items_error_background);
+                        uiComponents
+                                .getOverlayScrollView()
+                                .setBackgroundResource(R.drawable.overlay_items_error_background);
+                        uiComponents
+                                .getOverlayTitleTextView()
+                                .setText(getString(R.string.synchronization_canceled));
                         onOperationExecute(
                                 "\n\n!!!&gt; " + getString(R.string.synchronization_canceled));
                     }
 
-                    String operationsLog = overlayTextView.getText().toString();
+                    String operationsLog = uiComponents.getOverlayTextView().getText().toString();
 
                     try {
                         StorageUtils.writeOperationsLogFile(this, operationsLog);
                     } catch (LogFileCreationException e) {
-                        showToast(getString(R.string.cant_save_operations_log));
+                        uiComponents.showToast(getString(R.string.cant_save_operations_log));
                     }
 
-                    overlayTextView.setText(
-                            StorageUtils.convertOperationsLogs(this, operationsLog));
+                    uiComponents
+                            .getOverlayTextView()
+                            .setText(StorageUtils.convertOperationsLogs(this, operationsLog));
 
-                    overlayProgressBar.setVisibility(View.GONE);
-                    openLogsButton.setVisibility(View.VISIBLE);
-                    closeOverlayButton.setVisibility(View.VISIBLE);
+                    uiComponents.getOverlayProgressBar().setVisibility(View.GONE);
+                    uiComponents.getOpenLogsButton().setVisibility(View.VISIBLE);
+                    uiComponents.getCloseOverlayButton().setVisibility(View.VISIBLE);
                 });
     }
 }
