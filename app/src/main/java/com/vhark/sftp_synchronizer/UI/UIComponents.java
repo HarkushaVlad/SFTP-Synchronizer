@@ -27,8 +27,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.vhark.sftp_synchronizer.MainActivity;
 import com.vhark.sftp_synchronizer.R;
+import com.vhark.sftp_synchronizer.fragment.ConfirmationDialogFragment;
 
 import lombok.Getter;
+
+import java.util.concurrent.CountDownLatch;
 
 @Getter
 public class UIComponents {
@@ -120,7 +123,7 @@ public class UIComponents {
                 .addOnScrollChangedListener(
                         () -> {
                             int scrollY = mainScrollView.getScrollY();
-                            if (scrollY > activity.getValueInPxFromDp(300)) {
+                            if (scrollY > getValueInPxFromDp(300)) {
                                 fabScrollToTop.setVisibility(View.VISIBLE);
                             } else {
 
@@ -191,7 +194,7 @@ public class UIComponents {
         currentPhonePathText.post(
                 () -> {
                     int textViewHeight = currentPhonePathText.getHeight();
-                    int maxHeight = activity.getValueInPxFromDp(100);
+                    int maxHeight = getValueInPxFromDp(100);
 
                     if (textViewHeight > maxHeight) {
                         currentPhonePathScrollView.getLayoutParams().height = maxHeight;
@@ -205,7 +208,7 @@ public class UIComponents {
         currentSftpPathText.post(
                 () -> {
                     int textViewHeight = currentSftpPathText.getHeight();
-                    int maxHeight = activity.getValueInPxFromDp(100);
+                    int maxHeight = getValueInPxFromDp(100);
 
                     if (textViewHeight > maxHeight) {
                         currentSftpPathScrollView.getLayoutParams().height = maxHeight;
@@ -268,6 +271,20 @@ public class UIComponents {
         if (fadeLogoSynchronizingAnimation != null) {
             fadeLogoSynchronizingAnimation.start();
         }
+    }
+
+    public void showConfirmationDialog(String title, String message, CountDownLatch latch) {
+        activity.runOnUiThread(
+                () -> {
+                    ConfirmationDialogFragment dialog =
+                            ConfirmationDialogFragment.newInstance(title, message, latch);
+                    dialog.setCancelable(false);
+                    dialog.show(activity.getSupportFragmentManager(), "ConfirmationDialog");
+                });
+    }
+
+    private int getValueInPxFromDp(int valueInDp) {
+        return (int) (valueInDp * activity.getResources().getDisplayMetrics().density);
     }
 
     public void showToast(String message) {

@@ -3,11 +3,10 @@ package com.vhark.sftp_synchronizer.constant;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 
 public class PrefsConstants {
 
-    static PrefsConstants _instance;
+    private static PrefsConstants _instance;
 
     private static final String PREFS_NAME = "SftpSettingsPrefs";
 
@@ -34,7 +33,7 @@ public class PrefsConstants {
     }
 
     public void storeValueString(PrefsKeys key, String value) {
-        sharedPrefEditor.putString(key.toString(), value);
+        sharedPrefEditor.putString(key.toString(), value.trim());
         sharedPrefEditor.commit();
     }
 
